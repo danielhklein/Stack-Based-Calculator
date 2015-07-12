@@ -50,10 +50,6 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func displayHistory(sender: UIButton) {
-        history.text = history.text! + sender.currentTitle!
-    }
-    
     @IBAction func decAction(sender: UIButton) {
         if !isFloat {
             display.text = display.text! + "."
@@ -72,12 +68,15 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func displayPi(sender: UIButton) {
+    @IBAction func displayNum(sender: UIButton) {
         let digit = sender.currentTitle!
-        display.text = "\(M_PI)"
-        history.text = history.text! + "∏"
+        switch digit {
+        case "∏":
+            display.text = "\(M_PI)"; isFloat = true
+        default:
+            break
+        }
         userIsTyping = true
-        isFloat = true
     }
     
     @IBAction func op(sender: UIButton) {
