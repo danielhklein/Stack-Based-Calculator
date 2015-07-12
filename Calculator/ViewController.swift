@@ -14,14 +14,26 @@ class ViewController: UIViewController {
     @IBOutlet weak var display: UILabel!
     @IBOutlet weak var history: UILabel!
     
-    var userIsTyping = false
+    var brain = CalcBrain()
+    
     var isFloat = false
-    var opStack = Array<Double>()
+    var userIsTyping = false
+    
+    var displayVal: Double {
+        get {
+            return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
+        }
+        set {
+            display.text = "\(newValue)"
+            isFloat = true
+            userIsTyping = false
+        }
+    }
     
     @IBAction func clearHistory() {
         history.text = ""
-        opStack = []
-        display.text = ""
+        brain.clear()
+        display.text = "0"
         userIsTyping = false
         isFloat = false
     }
@@ -53,7 +65,11 @@ class ViewController: UIViewController {
     @IBAction func returnAction() {
         isFloat = true
         userIsTyping = false
-        opStack.append(displayVal)
+        if let result = brain.pushOperand(displayVal) {
+            displayVal = result
+        } else {
+            displayVal = 0
+        }
     }
     
     @IBAction func displayPi(sender: UIButton) {
@@ -64,45 +80,16 @@ class ViewController: UIViewController {
         isFloat = true
     }
     
-    var displayVal: Double {
-        get {
-            return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
-        }
-        set {
-            display.text = "\(newValue)"
-            isFloat = true
-            userIsTyping = false
-        }
-    }
-    
     @IBAction func op(sender: UIButton) {
-        let operation = sender.currentTitle!
         if userIsTyping {
             returnAction()
         }
-        switch operation {
-        case "+": performOp {$0 + $1}
-        case "-": performOp {$1 - $0}
-        case "×": performOp {$0 * $1}
-        case "÷": performOp {$1 / $0}
-        case "√": performOp {sqrt($0)}
-        case "sin": performOp {sin($0)}
-        case "cos": performOp {cos($0)}
-        default: break
-        }
-    }
-    
-    private func performOp(operation: (Double, Double) -> Double) {
-        if opStack.count >= 2 {
-            displayVal = operation(opStack.removeLast(), opStack.removeLast())
-            returnAction()
-        }
-    }
-    
-    private func performOp(operation: Double -> Double) {
-        if opStack.count >= 1 {
-            displayVal = operation(opStack.removeLast())
-            returnAction()
+        if let operation = sender.currentTitle {
+            if let result = brain.performOp(operation) {
+                displayVal = result
+            } else {
+                displayVal = 0
+            }
         }
     }
 }
