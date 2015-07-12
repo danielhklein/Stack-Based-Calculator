@@ -16,6 +16,15 @@ class ViewController: UIViewController {
     
     var userIsTyping = false
     var isFloat = false
+    var opStack = Array<Double>()
+    
+    @IBAction func clearHistory() {
+        history.text = ""
+        opStack = []
+        display.text = ""
+        userIsTyping = false
+        isFloat = false
+    }
     
     @IBAction func appendDigit(sender: UIButton) {
         let digit = sender.currentTitle!
@@ -29,6 +38,10 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBAction func displayHistory(sender: UIButton) {
+        history.text = history.text! + sender.currentTitle!
+    }
+    
     @IBAction func decAction(sender: UIButton) {
         if !isFloat {
             display.text = display.text! + "."
@@ -36,8 +49,6 @@ class ViewController: UIViewController {
             userIsTyping = true
         }
     }
-    
-    var opStack = Array<Double>()
     
     @IBAction func returnAction() {
         isFloat = true
@@ -48,6 +59,7 @@ class ViewController: UIViewController {
     @IBAction func displayPi(sender: UIButton) {
         let digit = sender.currentTitle!
         display.text = "\(M_PI)"
+        history.text = history.text! + "∏"
         userIsTyping = true
         isFloat = true
     }
