@@ -7,12 +7,15 @@
 //
 
 import UIKit
+import Darwin
 
 class ViewController: UIViewController {
     
     @IBOutlet weak var display: UILabel!
+    @IBOutlet weak var history: UILabel!
     
-    var userIsTyping: Bool = false
+    var userIsTyping = false
+    var isFloat = false
     
     @IBAction func appendDigit(sender: UIButton) {
         let digit = sender.currentTitle!
@@ -22,14 +25,31 @@ class ViewController: UIViewController {
         else {
             display.text = digit
             userIsTyping = true
+            isFloat = false
+        }
+    }
+    
+    @IBAction func decAction(sender: UIButton) {
+        if !isFloat {
+            display.text = display.text! + "."
+            isFloat = true
+            userIsTyping = true
         }
     }
     
     var opStack = Array<Double>()
     
     @IBAction func returnAction() {
+        isFloat = true
         userIsTyping = false
         opStack.append(displayVal)
+    }
+    
+    @IBAction func displayPi(sender: UIButton) {
+        let digit = sender.currentTitle!
+        display.text = "\(M_PI)"
+        userIsTyping = true
+        isFloat = true
     }
     
     var displayVal: Double {
@@ -38,6 +58,7 @@ class ViewController: UIViewController {
         }
         set {
             display.text = "\(newValue)"
+            isFloat = true
             userIsTyping = false
         }
     }
@@ -53,6 +74,8 @@ class ViewController: UIViewController {
         case "×": performOp {$0 * $1}
         case "÷": performOp {$1 / $0}
         case "√": performOp {sqrt($0)}
+        case "sin": performOp {sin($0)}
+        case "cos": performOp {cos($0)}
         default: break
         }
     }
