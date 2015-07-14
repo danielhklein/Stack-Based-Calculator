@@ -67,6 +67,36 @@ class CalcBrain {
         return result
     }
     
+    func getStack() -> String? {
+        let (result, remainder) = getStack(opStack)
+        return result
+    }
+    
+    private func getStack(ops: [Op]) -> (result: String?, remainingOps: [Op]) {
+        if !ops.isEmpty {
+            var remainingOps = ops
+            let op = remainingOps.removeLast()
+            switch op {
+            case .Operand(let operand):
+                return ("\(operand)", remainingOps)
+            case .UnaryOp(let symbol, let operation):
+                let next = getStack(remainingOps)
+                if let operand = next.result {
+                    return ("\(symbol) (" + operand + ")", remainingOps)
+                }
+            case .BinaryOp(let symbol, let operation):
+                let next1 = getStack(remainingOps)
+                if let operand1 = next1.result {
+                    let next2 = getStack(next1.remainingOps)
+                    if let operand2 = next2.result {
+                        return ("(" + operand2 + "\(symbol)" + operand1 + ")", remainingOps)
+                    }
+                }
+            }
+        }
+        return (nil, ops)
+    }
+    
     private func eval(ops: [Op]) -> (result: Double?, remainingOps: [Op]) {
         if !ops.isEmpty {
             var remainingOps = ops
@@ -91,4 +121,6 @@ class CalcBrain {
         }
         return (nil, ops)
     }
+    
+    
 }

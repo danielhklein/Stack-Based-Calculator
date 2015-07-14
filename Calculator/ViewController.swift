@@ -63,15 +63,17 @@ class ViewController: UIViewController {
         userIsTyping = false
         if let result = brain.pushOperand(displayVal) {
             displayVal = result
+            history.text = brain.getStack()
         } else {
             displayVal = 0
+            history.text = ""
         }
     }
     
     @IBAction func displayNum(sender: UIButton) {
         let digit = sender.currentTitle!
         switch digit {
-        case "∏":
+        case "π":
             display.text = "\(M_PI)"; isFloat = true
         default:
             break
@@ -86,8 +88,10 @@ class ViewController: UIViewController {
         if let operation = sender.currentTitle {
             if let result = brain.performOp(operation) {
                 displayVal = result
+                history.text = brain.getStack()
             } else {
                 displayVal = 0
+                history.text = ""
             }
         }
     }
