@@ -45,6 +45,25 @@ class CalcBrain {
         learnOp(Op.UnaryOp("cos", cos))
     }
     
+    var program: AnyObject { //PropertyList
+        get {
+            return opStack.map {$0.description}
+        }
+        set {
+            if let opSymbols = newValue as? Array<String> {
+                var newOpStack = [Op]()
+                for opSymbol in opSymbols {
+                    if let op = knownOps[opSymbol] {
+                        newOpStack.append(op)
+                    } else if let operand = NSNumberFormatter().numberFromString(opSymbol)?.doubleValue {
+                        newOpStack.append(.Operand(operand))
+                    }
+                }
+                opStack = newOpStack
+            }
+        }
+    }
+    
     func clear() {
         opStack.removeAll(keepCapacity: false)
     }
