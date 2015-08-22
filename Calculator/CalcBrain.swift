@@ -69,6 +69,7 @@ class CalcBrain {
     }
     
     func pushOperand(operand: Double) -> Double?{
+        println("operand: \(operand)")
         opStack.append(Op.Operand(operand))
         return eval()
     }
